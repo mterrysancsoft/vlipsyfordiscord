@@ -17,7 +17,7 @@ client.on('message', async (msg) =>  {
     {
         console.log('Message: ' + msg);
         if (msg.content.startsWith('!vliplist')) {
-            var search = msg.content.replace('!vlipinfo','').trim();
+            var search = msg.content.replace('!vliplist','').trim();
             const vlips = await getVlips(search);
             var index = 0;
             var catalog = "";
