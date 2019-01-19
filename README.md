@@ -17,3 +17,7 @@ Inserts the vlip with the matching Vlipsy identifier.
 
 ### Errors
 If an error occurs or no results are found, the bot replies with "Sorry, I got nothing..."
+
+### Example
+
+![Alt text](resources/vlip-sample.png?raw=true "Sample use in Discord")
