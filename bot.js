@@ -20,11 +20,18 @@ client.on('message', async (msg) =>  {
             var search = msg.content.replace('!vliplist','').trim();
             const vlips = await getVlips(search);
             var index = 0;
-            var catalog = "";
+            var catalog = "\r";
             vlips.forEach(function(vlip) {
-                catalog += `${++index}: ${vlip.title} from ${vlip.from} - (${vlip.rating}) /${vlip.slug}\r`;
+                catalog += `${++index}) ${vlip.id}: ${vlip.title} from ${vlip.from} - (${vlip.rating}) /${vlip.slug}\r`;
             })
-            msg.channel.send(catalog.substr(0,DISCORD_MESSAGE_MAX_LENGTH))
+            msg.reply(catalog.substr(0,DISCORD_MESSAGE_MAX_LENGTH))
+        }
+        else if (msg.content.startsWith('!vlipid')) {
+            var id = msg.content.replace('!vlipid','').trim();
+            const vlip = await getVlipById(id);
+            if (vlip) {
+                msg.channel.send(`${vlip.title} from ${vlip.from} - ${vlip.media.mp4.url}`);
+            }
         }
         else if (msg.content.startsWith('!vlip')) {
             var search = msg.content.replace('!vlip','').trim();
@@ -36,7 +43,7 @@ client.on('message', async (msg) =>  {
     }
     catch (error)
     {
-        msg.channel.send(`Sorry, I got nothing... `);
+        msg.reply(`Sorry, I got nothing... `);
         console.log(error);
     }
 });
@@ -53,6 +60,16 @@ const getVlips = async (search) => {
     let response = await axios.get(`https://apiv2.vlipsy.com/v1/vlips/search?key=${VLIPSY_API_KEY}&q=${search}&limit=${VLIPSY_LIMIT}`);
     if (response.status == 200) {
         if (response.data.data.length > 0) {
+            return response.data.data;
+        }
+    }
+    throw new Error('No vlips returned');
+}
+
+const getVlipById = async(id) => {
+    let response = await axios.get(`https://apiv2.vlipsy.com/v1/vlips/${id}?key=${VLIPSY_API_KEY}`);
+    if (response.status == 200) {
+        if (response.data.data) {
             return response.data.data;
         }
     }
